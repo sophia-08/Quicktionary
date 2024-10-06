@@ -172,7 +172,7 @@ function createPopup(highlightElement) {
   // Position the popup under the highlighted word
   const rect = highlightElement.getBoundingClientRect();
   popupElement.style.left = `${rect.left + window.scrollX}px`;
-  popupElement.style.top = `${rect.bottom + window.scrollY + 5}px`; // Added 5px gap
+  popupElement.style.top = `${rect.bottom + window.scrollY }px`; 
 
   document.body.appendChild(popupElement);
 }
