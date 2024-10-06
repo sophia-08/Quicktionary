@@ -125,7 +125,7 @@ function setThemeAwareHighlight(element) {
       .reduce((a, b) => a + b) < 382; // Threshold for considering it a dark theme
 
   if (isDarkTheme) {
-    element.style.backgroundColor = "rgba(80, 80, 0, 0.5)"; // Dark yellow with transparency
+    element.style.backgroundColor = "rgba(192, 192, 0, 0.4)"; // Dark yellow with transparency
     element.style.color = "#fff"; // White text for dark background
   } else {
     element.style.backgroundColor = "rgba(255, 255, 0, 0.3)"; // Light yellow with transparency
