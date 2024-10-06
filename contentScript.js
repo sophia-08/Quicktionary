@@ -1,4 +1,3 @@
-
 let lastWord = "";
 let lastKnownMouseX = 0;
 let lastKnownMouseY = 0;
@@ -162,17 +161,18 @@ function createPopup(highlightElement) {
   popupElement.style.boxShadow = "0 2px 10px rgba(0,0,0,0.3)";
   popupElement.style.zIndex = "1000";
   popupElement.style.maxWidth = "500px";
-  // popupElement.style.fontSize = "14px";
+  popupElement.style.maxHeight = "300px"; // Set maximum height
+  popupElement.style.overflowY = "auto"; // Enable vertical scrolling
   popupElement.style.lineHeight = "1.4";
   popupElement.textContent = "Loading definition...";
 
   // Set theme-aware styles
   setThemeAwareStyles(popupElement);
 
-  // Position the popup under the highlighted word
-  const rect = highlightElement.getBoundingClientRect();
+  // Position the popup directly under the highlighted word
+  const rect = highlightedElement.getBoundingClientRect();
   popupElement.style.left = `${rect.left + window.scrollX}px`;
-  popupElement.style.top = `${rect.bottom + window.scrollY }px`; 
+  popupElement.style.top = `${rect.bottom + window.scrollY}px`;
 
   document.body.appendChild(popupElement);
 }
@@ -191,11 +191,31 @@ function setThemeAwareStyles(element) {
     element.style.backgroundColor = "rgba(40, 40, 40, 0.95)";
     element.style.color = "#e0e0e0";
     element.style.border = "1px solid #555";
+    element.style.scrollbarColor = "#666 #333";
   } else {
     element.style.backgroundColor = "rgba(255, 255, 255, 0.95)";
     element.style.color = "#333";
     element.style.border = "1px solid #ccc";
+    element.style.scrollbarColor = "#ccc #f1f1f1";
   }
+
+  // Webkit scrollbar styles
+  element.style.scrollbarWidth = "thin";
+  element.style.cssText += `
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: ${isDarkTheme ? "#333" : "#f1f1f1"};
+    }
+    ::-webkit-scrollbar-thumb {
+      background: ${isDarkTheme ? "#666" : "#ccc"};
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: ${isDarkTheme ? "#888" : "#aaa"};
+    }
+  `;
 }
 
 function removePopup() {
