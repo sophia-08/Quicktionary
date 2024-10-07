@@ -3,6 +3,7 @@ let lastKnownMouseX = 0;
 let lastKnownMouseY = 0;
 let highlightedElement = null;
 let popupElement = null;
+let popupStyleElement = null;
 
 // Track the last known mouse position
 document.addEventListener(
@@ -55,11 +56,6 @@ document.addEventListener("keydown", (e) => {
 
     if (result && result.word) {
       lastWord = result.word;
-      // lastWord = word;
-      chrome.runtime.sendMessage({
-        type: "wordUnderCursor",
-        word: result.word,
-      });
 
       // Highlight the word
       highlightWord(result.range);
@@ -155,15 +151,7 @@ function createPopup(highlightElement) {
   removePopup(); // Remove any existing popup
 
   popupElement = document.createElement("div");
-  popupElement.style.position = "absolute";
-  popupElement.style.padding = "10px";
-  popupElement.style.borderRadius = "5px";
-  popupElement.style.boxShadow = "0 2px 10px rgba(0,0,0,0.3)";
-  popupElement.style.zIndex = "1000";
-  popupElement.style.maxWidth = "500px";
-  popupElement.style.maxHeight = "300px"; // Set maximum height
-  popupElement.style.overflowY = "auto"; // Enable vertical scrolling
-  popupElement.style.lineHeight = "1.4";
+  popupElement.id = "extension-popup"; // Add an ID for styling
   popupElement.textContent = "Loading definition...";
 
   // Set theme-aware styles
@@ -178,50 +166,78 @@ function createPopup(highlightElement) {
 }
 
 function setThemeAwareStyles(element) {
-  // Get the computed styles of the body to determine the theme
   const bodyStyles = window.getComputedStyle(document.body);
   const isDarkTheme =
     bodyStyles.backgroundColor
       .match(/^rgb\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)$/i)
       .slice(1)
       .map(Number)
-      .reduce((a, b) => a + b) < 382; // Threshold for considering it a dark theme
+      .reduce((a, b) => a + b) < 382;
 
-  if (isDarkTheme) {
-    element.style.backgroundColor = "rgba(40, 40, 40, 0.95)";
-    element.style.color = "#e0e0e0";
-    element.style.border = "1px solid #555";
-    element.style.scrollbarColor = "#666 #333";
-  } else {
-    element.style.backgroundColor = "rgba(255, 255, 255, 0.95)";
-    element.style.color = "#333";
-    element.style.border = "1px solid #ccc";
-    element.style.scrollbarColor = "#ccc #f1f1f1";
+  // Remove existing style element if it exists
+  if (popupStyleElement) {
+    popupStyleElement.remove();
   }
 
-  // Webkit scrollbar styles
-  element.style.scrollbarWidth = "thin";
-  element.style.cssText += `
-    ::-webkit-scrollbar {
+  // Create a new style element
+  popupStyleElement = document.createElement("style");
+
+  popupStyleElement.textContent = `
+    #extension-popup {
+      position: absolute;
+      padding: 10px;
+      border-radius: 5px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+      z-index: 1000;
+      max-width: 500px;
+      max-height: 300px;
+      overflow-y: auto;
+      line-height: 1.4;
+      background-color: ${
+        isDarkTheme ? "rgba(40, 40, 40, 0.95)" : "rgba(255, 255, 255, 0.95)"
+      };
+      color: ${isDarkTheme ? "#e0e0e0" : "#333"};
+      border: 1px solid ${isDarkTheme ? "#555" : "#ccc"};
+    }
+
+    #extension-popup::-webkit-scrollbar {
       width: 8px;
     }
-    ::-webkit-scrollbar-track {
+    #extension-popup::-webkit-scrollbar-track {
       background: ${isDarkTheme ? "#333" : "#f1f1f1"};
     }
-    ::-webkit-scrollbar-thumb {
+    #extension-popup::-webkit-scrollbar-thumb {
       background: ${isDarkTheme ? "#666" : "#ccc"};
       border-radius: 4px;
     }
-    ::-webkit-scrollbar-thumb:hover {
+    #extension-popup::-webkit-scrollbar-thumb:hover {
       background: ${isDarkTheme ? "#888" : "#aaa"};
     }
+    
+    #extension-popup he3 {
+      font-size: 1.1em;
+      font-weight: bold;
+      margin-top: 10px;
+      margin-bottom: 5px;
+      color: ${isDarkTheme ? "#4caf50" : "#2e7d32"};
+      border-bottom: 1px solid ${isDarkTheme ? "#555" : "#ccc"};
+      padding-bottom: 3px;
+      display: block;
+    }
   `;
+
+  // Append the style element to the document head
+  document.head.appendChild(popupStyleElement);
 }
 
 function removePopup() {
   if (popupElement) {
     popupElement.remove();
     popupElement = null;
+  }
+  if (popupStyleElement) {
+    popupStyleElement.remove();
+    popupStyleElement = null;
   }
 }
 
@@ -233,10 +249,10 @@ function fetchDefinition(word) {
     .then((data) => {
       if (Array.isArray(data) && data.length > 0) {
         const entry = data[0];
-        let definitionHTML = `<h2>${word}</h2>`;
+        let definitionHTML = ""; //`<he2>${word}</he2>`;
 
         entry.meanings.forEach((meaning, index) => {
-          definitionHTML += `<h3>${index + 1}. ${meaning.partOfSpeech}</h3>`;
+          definitionHTML += `<he3>${index + 1}. ${meaning.partOfSpeech}</he3>`;
           definitionHTML += "<ul>";
           meaning.definitions.forEach((def) => {
             definitionHTML += `<li><strong>Definition:</strong> ${def.definition}`;
