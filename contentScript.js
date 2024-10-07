@@ -43,8 +43,6 @@ document.addEventListener("keydown", (e) => {
   // Check if the pressed key combination is Ctrl+Q
   if (e.ctrlKey && e.key === "q") {
     e.preventDefault(); // Prevent default browser behavior for this key combination
-    // const selection = window.getSelection();
-    // const range = selection.rangeCount > 0 ? selection.getRangeAt(0) : document.caretRangeFromPoint(e.clientX, e.clientY);
 
     // Remove previous highlight if it exists
     removeHighlight();
@@ -219,7 +217,7 @@ function setThemeAwareStyles(element) {
       font-weight: bold;
       margin-top: 10px;
       margin-bottom: 5px;
-      color: ${isDarkTheme ? "#4caf50" : "#2e7d32"};
+      color: ${isDarkTheme ? "#4caf50" : "#2e7d32"}; // Green-ish
       border-bottom: 1px solid ${isDarkTheme ? "#555" : "#ccc"};
       padding-bottom: 3px;
       display: block;
