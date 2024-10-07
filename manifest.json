@@ -2,7 +2,7 @@
   "name": "Quicktionary",
   "version": "1.0.0",
   "description": "Look up definition online for the word at the mouse pointer",
-  "permissions": [ "tabs",  "activeTab"],
+  "permissions": ["tabs", "activeTab", "storage"],
   "host_permissions": ["https://*/*"],
   "content_scripts": [
     {
@@ -27,12 +27,21 @@
       "48": "assets/ext-icon.png",
       "128": "assets/ext-icon.png"
     },
-    "default_title": "Quicktionary"
+    "default_title": "Quicktionary",
+    "default_popup": "popup.html"
   },
   "icons": {
     "16": "assets/ext-icon.png",
     "48": "assets/ext-icon.png",
     "128": "assets/ext-icon.png"
+  },
+  "commands": {
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Ctrl+Q"
+      },
+      "description": "Activate Quicktionary"
+    }
   },
   "manifest_version": 3
 }
