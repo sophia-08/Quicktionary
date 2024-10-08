@@ -283,15 +283,18 @@ function fetchDefinition(word) {
       if (Array.isArray(data) && data.length > 0) {
         const entry = data[0];
         let definitionHTML =
-          '<div style="display: flex; justify-content: space-between; align-items: center;">';
-        definitionHTML += `<he2>${word}</he2>`;
+          '<div style="display: flex; flex-direction: column; margin-bottom: 10px;">';
+        definitionHTML += `<he2 style="margin-bottom: 5px;">${word}</he2>`;
 
-        // Move phonetic element to top right
+        // Move phonetic element below the word
         if (entry.phonetics && entry.phonetics.length > 0) {
           const phonetic = entry.phonetics.find((p) => p.text && p.audio);
           if (phonetic) {
-            definitionHTML += `<span><strong>${phonetic.text}</strong> `;
-            definitionHTML += `<audio controls src="${phonetic.audio}"  style="height: 20px; vertical-align: right;">Your browser does not support the audio element.</audio></span>`;
+            definitionHTML +=
+              '<div style="display: flex; align-items: center; justify-content: flex-start;">';
+            definitionHTML += `<span style="margin-right: 10px;"><strong>${phonetic.text}</strong></span>`;
+            definitionHTML += `<audio controls src="${phonetic.audio}" style="height: 20px;">Your browser does not support the audio element.</audio>`;
+            definitionHTML += "</div>";
           }
         }
         definitionHTML += "</div>";
