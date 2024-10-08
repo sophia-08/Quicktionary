@@ -293,7 +293,7 @@ function fetchDefinition(word) {
             definitionHTML +=
               '<div style="display: flex; align-items: center;">';
             definitionHTML += `<span style="font-size: 0.9em; color: #666; margin-right: 5px;">${phonetic.text}</span>`;
-            definitionHTML += `<button onclick="new Audio('${phonetic.audio}').play()" style="background: none; border: none; cursor: pointer; padding: 0; font-size: 1em; color: #4a4a4a;">🔊</button>`;
+            definitionHTML += `<button onclick="new Audio('${phonetic.audio}').play()" style="background: none; border: none; cursor: pointer; padding: 0; font-size: 1em; color: #4a4a4a; line-height: 1;">▶️</button>`;
             definitionHTML += "</div>";
           }
         }
