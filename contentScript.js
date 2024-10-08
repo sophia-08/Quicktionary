@@ -4,7 +4,7 @@ let lastKnownMouseY = 0;
 let highlightedElement = null;
 let popupElement = null;
 let popupStyleElement = null;
-let userShortcut = { key: "q", ctrlKey: true, altKey: false, shiftKey: false };
+let userShortcut = { key: "q", modifier: "ctrl" };
 
 // Fetch the user-defined shortcut from storage
 chrome.storage.sync.get("shortcut", function (data) {
@@ -56,11 +56,16 @@ function isMouseInElement(mouseEvent, elementRect) {
 
 document.addEventListener("keydown", (e) => {
   // Check if the pressed key combination matches the user-defined shortcut
+  const isMac = navigator.platform.toUpperCase().indexOf("MAC") >= 0;
+  const modifierPressed = 
+    (userShortcut.modifier === "ctrl" && (e.ctrlKey || (isMac && e.metaKey))) ||
+    (userShortcut.modifier === "alt" && (!isMac && e.altKey)) ||
+    (userShortcut.modifier === "shift" && e.shiftKey) ||
+    (isMac && userShortcut.modifier === "option" && e.altKey);
+
   if (
-    e.key.toLowerCase() === userShortcut.key.toLowerCase() &&
-    e.ctrlKey === userShortcut.ctrlKey &&
-    e.altKey === userShortcut.altKey &&
-    e.shiftKey === userShortcut.shiftKey
+    modifierPressed &&
+    e.key.toLowerCase() === userShortcut.key.toLowerCase()
   ) {
     e.preventDefault(); // Prevent default browser behavior for this key combination
 

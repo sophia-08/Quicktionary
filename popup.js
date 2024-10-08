@@ -2,16 +2,26 @@ document.addEventListener("DOMContentLoaded", function () {
   var keyInput = document.getElementById("key");
   var modifierSelect = document.getElementById("modifier");
   var saveButton = document.getElementById("save");
+  var isMac = navigator.platform.toUpperCase().indexOf("MAC") >= 0;
+
+  // Hide/show options based on platform
+  if (isMac) {
+    var altOption = modifierSelect.querySelector(".windows-only");
+    if (altOption) {
+      altOption.style.display = "none";
+    }
+  } else {
+    var optionOption = modifierSelect.querySelector(".mac-only");
+    if (optionOption) {
+      optionOption.style.display = "none";
+    }
+  }
 
   // Load current shortcut
   chrome.storage.sync.get("shortcut", function (data) {
     if (data.shortcut) {
       keyInput.value = data.shortcut.key;
-      modifierSelect.value = data.shortcut.ctrlKey
-        ? "ctrl"
-        : data.shortcut.altKey
-        ? "alt"
-        : "shift";
+      modifierSelect.value = data.shortcut.modifier;
     }
   });
 
@@ -22,19 +32,10 @@ document.addEventListener("DOMContentLoaded", function () {
     if (newKey) {
       var shortcut = {
         key: newKey,
-        ctrlKey: modifier === "ctrl",
-        altKey: modifier === "alt",
-        shiftKey: modifier === "shift",
+        modifier: modifier,
       };
       chrome.storage.sync.set({ shortcut: shortcut }, function () {
-        // Change button text to "Saved!"
-        saveButton.textContent = "Saved!";
-        saveButton.disabled = true;
-
-        // Close the popup after a short delay
-        setTimeout(function () {
-          window.close();
-        }, 500); // 500 ms delay
+        window.close();
       });
     }
   });
