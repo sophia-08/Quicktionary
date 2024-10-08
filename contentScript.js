@@ -283,17 +283,17 @@ function fetchDefinition(word) {
       if (Array.isArray(data) && data.length > 0) {
         const entry = data[0];
         let definitionHTML =
-          '<div style="display: flex; flex-direction: column; margin-bottom: 10px;">';
-        definitionHTML += `<he2 style="margin-bottom: 5px;">${word}</he2>`;
+          '<div style="display: flex; align-items: center; margin-bottom: 10px;">';
+        definitionHTML += `<he2 style="margin-right: 10px;">${word}</he2>`;
 
-        // Move phonetic element below the word
+        // Add phonetic element and play button after the word
         if (entry.phonetics && entry.phonetics.length > 0) {
           const phonetic = entry.phonetics.find((p) => p.text && p.audio);
           if (phonetic) {
             definitionHTML +=
-              '<div style="display: flex; align-items: center; justify-content: flex-start;">';
-            definitionHTML += `<span style="margin-right: 10px;"><strong>${phonetic.text}</strong></span>`;
-            definitionHTML += `<audio controls src="${phonetic.audio}" style="height: 20px;">Your browser does not support the audio element.</audio>`;
+              '<div style="display: flex; align-items: center;">';
+            definitionHTML += `<span style="font-size: 0.9em; color: #666; margin-right: 5px;">${phonetic.text}</span>`;
+            definitionHTML += `<button onclick="new Audio('${phonetic.audio}').play()" style="background: none; border: none; cursor: pointer; padding: 0; font-size: 1em; color: #4a4a4a;">🔊</button>`;
             definitionHTML += "</div>";
           }
         }
