@@ -4,18 +4,6 @@ document.addEventListener("DOMContentLoaded", function () {
   var saveButton = document.getElementById("save");
   var isMac = navigator.platform.toUpperCase().indexOf("MAC") >= 0;
 
-  // Hide/show options based on platform
-  if (isMac) {
-    var altOption = modifierSelect.querySelector(".windows-only");
-    if (altOption) {
-      altOption.style.display = "none";
-    }
-  } else {
-    var optionOption = modifierSelect.querySelector(".mac-only");
-    if (optionOption) {
-      optionOption.style.display = "none";
-    }
-  }
 
   // Load current shortcut
   chrome.storage.sync.get("shortcut", function (data) {
