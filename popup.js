@@ -1,17 +1,32 @@
 document.addEventListener("DOMContentLoaded", function () {
-  var shortcutInput = document.getElementById("shortcut");
+  var keyInput = document.getElementById("key");
+  var modifierSelect = document.getElementById("modifier");
   var saveButton = document.getElementById("save");
 
   // Load current shortcut
   chrome.storage.sync.get("shortcut", function (data) {
-    shortcutInput.value = data.shortcut || "q";
+    if (data.shortcut) {
+      keyInput.value = data.shortcut.key;
+      modifierSelect.value = data.shortcut.ctrlKey
+        ? "ctrl"
+        : data.shortcut.altKey
+        ? "alt"
+        : "shift";
+    }
   });
 
   // Save new shortcut
   saveButton.addEventListener("click", function () {
-    var newShortcut = shortcutInput.value.toLowerCase();
-    if (newShortcut) {
-      chrome.storage.sync.set({ shortcut: newShortcut }, function () {
+    var newKey = keyInput.value.toLowerCase();
+    var modifier = modifierSelect.value;
+    if (newKey) {
+      var shortcut = {
+        key: newKey,
+        ctrlKey: modifier === "ctrl",
+        altKey: modifier === "alt",
+        shiftKey: modifier === "shift",
+      };
+      chrome.storage.sync.set({ shortcut: shortcut }, function () {
         // Change button text to "Saved!"
         saveButton.textContent = "Saved!";
         saveButton.disabled = true;

@@ -4,11 +4,13 @@ let lastKnownMouseY = 0;
 let highlightedElement = null;
 let popupElement = null;
 let popupStyleElement = null;
-let userShortcut = ""; // Store the user-defined shortcut
+let userShortcut = { key: "q", ctrlKey: true, altKey: false, shiftKey: false };
 
 // Fetch the user-defined shortcut from storage
 chrome.storage.sync.get("shortcut", function (data) {
-  userShortcut = data.shortcut || "q"; // Default to 'q' if not set
+  if (data.shortcut) {
+    userShortcut = data.shortcut;
+  }
 });
 
 // Listen for shortcut changes
@@ -54,7 +56,12 @@ function isMouseInElement(mouseEvent, elementRect) {
 
 document.addEventListener("keydown", (e) => {
   // Check if the pressed key combination matches the user-defined shortcut
-  if (e.ctrlKey && e.key.toLowerCase() === userShortcut.toLowerCase()) {
+  if (
+    e.key.toLowerCase() === userShortcut.key.toLowerCase() &&
+    e.ctrlKey === userShortcut.ctrlKey &&
+    e.altKey === userShortcut.altKey &&
+    e.shiftKey === userShortcut.shiftKey
+  ) {
     e.preventDefault(); // Prevent default browser behavior for this key combination
 
     // Remove previous highlight if it exists
