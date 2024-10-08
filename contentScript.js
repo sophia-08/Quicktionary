@@ -57,9 +57,9 @@ function isMouseInElement(mouseEvent, elementRect) {
 document.addEventListener("keydown", (e) => {
   // Check if the pressed key combination matches the user-defined shortcut
   const isMac = navigator.platform.toUpperCase().indexOf("MAC") >= 0;
-  const modifierPressed = 
+  const modifierPressed =
     (userShortcut.modifier === "ctrl" && (e.ctrlKey || (isMac && e.metaKey))) ||
-    (userShortcut.modifier === "alt" && (!isMac && e.altKey)) ||
+    (userShortcut.modifier === "alt" && !isMac && e.altKey) ||
     (userShortcut.modifier === "shift" && e.shiftKey) ||
     (isMac && userShortcut.modifier === "option" && e.altKey);
 
@@ -236,7 +236,17 @@ function setThemeAwareStyles(element) {
     #extension-popup::-webkit-scrollbar-thumb:hover {
       background: ${isDarkTheme ? "#888" : "#aaa"};
     }
-    
+    #extension-popup he2 {
+      font-size: 1.5em;
+      font-weight: bold;
+      margin-top: 10px;
+      margin-bottom: 5px;
+      color: ${isDarkTheme ? "#4caf50" : "#2e7d32"}; // Green-ish
+      border-bottom: 1px solid ${isDarkTheme ? "#555" : "#ccc"};
+      padding-bottom: 3px;
+      display: block;
+    }
+
     #extension-popup he3 {
       font-size: 1.1em;
       font-weight: bold;
@@ -272,7 +282,19 @@ function fetchDefinition(word) {
     .then((data) => {
       if (Array.isArray(data) && data.length > 0) {
         const entry = data[0];
-        let definitionHTML = ""; //`<he2>${word}</he2>`;
+        let definitionHTML =
+          '<div style="display: flex; justify-content: space-between; align-items: center;">';
+        definitionHTML += `<he2>${word}</he2>`;
+
+        // Move phonetic element to top right
+        if (entry.phonetics && entry.phonetics.length > 0) {
+          const phonetic = entry.phonetics.find((p) => p.text && p.audio);
+          if (phonetic) {
+            definitionHTML += `<span><strong>${phonetic.text}</strong> `;
+            definitionHTML += `<audio controls src="${phonetic.audio}"  style="height: 20px; vertical-align: right;">Your browser does not support the audio element.</audio></span>`;
+          }
+        }
+        definitionHTML += "</div>";
 
         entry.meanings.forEach((meaning, index) => {
           definitionHTML += `<he3>${index + 1}. ${meaning.partOfSpeech}</he3>`;
@@ -298,14 +320,6 @@ function fetchDefinition(word) {
           }
         });
 
-        if (entry.phonetics && entry.phonetics.length > 0) {
-          const phonetic = entry.phonetics.find((p) => p.text && p.audio);
-          if (phonetic) {
-            definitionHTML += `<p><strong>Pronunciation:</strong> ${phonetic.text} `;
-            definitionHTML += `<audio controls src="${phonetic.audio}">Your browser does not support the audio element.</audio></p>`;
-          }
-        }
-
         updatePopupContent(definitionHTML);
       } else {
         updatePopupContent("Definition not found.");
@@ -316,7 +330,6 @@ function fetchDefinition(word) {
       updatePopupContent("Error fetching definition.");
     });
 }
-
 // Function to update the popup content
 function updatePopupContent(content) {
   if (popupElement) {
