@@ -6,7 +6,7 @@
     <title>Quicktionary Settings</title>
     <style>
       body {
-        width: 200px;
+        width: 250px;
         padding: 12px;
         font-family: Arial, sans-serif;
         background-color: #f5f5f5;
@@ -19,33 +19,27 @@
         padding: 12px;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
       }
+      .shortcut-group {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 12px;
+      }
       .shortcut-label {
         font-weight: bold;
         color: #2c3e50;
         font-size: 0.95em;
-        margin-bottom: 8px;
-        display: block;
+        margin-right: 4px;
       }
-      .shortcut-group {
+      .checkbox-label {
         display: flex;
         align-items: center;
-        gap: 10px;
-        margin-bottom: 12px;
-      }
-      .modifiers {
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
-      }
-      .key-input {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-      }
-      .key-label {
-        font-weight: bold;
-        color: #34495e;
+        font-weight: normal;
         font-size: 0.9em;
+        white-space: nowrap;
+      }
+      input[type="checkbox"] {
+        margin-right: 3px;
       }
       input[type="text"] {
         width: 20px;
@@ -55,15 +49,6 @@
         border-radius: 3px;
         font-size: 0.9em;
         text-align: center;
-      }
-      .checkbox-label {
-        display: flex;
-        align-items: center;
-        font-weight: normal;
-        font-size: 0.9em;
-      }
-      input[type="checkbox"] {
-        margin-right: 3px;
       }
       button {
         display: block;
@@ -84,20 +69,15 @@
   </head>
   <body>
     <div class="container">
-      <label class="shortcut-label">Shortcut:</label>
       <div class="shortcut-group">
-        <div class="modifiers">
-          <label class="checkbox-label">
-            <input type="checkbox" id="ctrlModifier" /> Ctrl
-          </label>
-          <label class="checkbox-label">
-            <input type="checkbox" id="shiftModifier" /> Shift
-          </label>
-        </div>
-        <div class="key-input">
-          <label class="key-label" for="key">Key:</label>
-          <input type="text" id="key" maxlength="1" />
-        </div>
+        <label class="shortcut-label">Shortcut:</label>
+        <label class="checkbox-label">
+          <input type="checkbox" id="ctrlModifier" /> Ctrl
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" id="shiftModifier" /> Shift
+        </label>
+        <input type="text" id="key" maxlength="1" aria-label="Key" />
       </div>
       <button id="save">Save</button>
     </div>
