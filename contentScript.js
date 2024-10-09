@@ -54,6 +54,30 @@ function isMouseInElement(mouseEvent, elementRect) {
   );
 }
 
+
+// Function to handle the dictionary lookup
+function handleDictionaryLookup(x, y) {
+  // Remove previous highlight if it exists
+  removeHighlight();
+
+  console.log("Last xy: ", x, y);
+
+  // Use the provided mouse position
+  const result = getWordAtPosition(x, y);
+
+  if (result && result.word) {
+    lastWord = result.word;
+
+    // Highlight the word
+    highlightWord(result.range);
+  }
+}
+
+// Add event listener for double-click
+document.addEventListener("dblclick", (e) => {
+  handleDictionaryLookup(e.clientX, e.clientY);
+});
+
 document.addEventListener("keydown", (e) => {
   // Check if the pressed key combination matches the user-defined shortcut
   const isMac = navigator.platform.toUpperCase().indexOf("MAC") >= 0;
@@ -68,23 +92,10 @@ document.addEventListener("keydown", (e) => {
     e.key.toLowerCase() === userShortcut.key.toLowerCase()
   ) {
     e.preventDefault(); // Prevent default browser behavior for this key combination
-
-    // Remove previous highlight if it exists
-    removeHighlight();
-
-    console.log("Last xy: ", lastKnownMouseX, lastKnownMouseY);
-
-    // Use the last known mouse position
-    const result = getWordAtPosition(lastKnownMouseX, lastKnownMouseY);
-
-    if (result && result.word) {
-      lastWord = result.word;
-
-      // Highlight the word
-      highlightWord(result.range);
-    }
+    handleDictionaryLookup(lastKnownMouseX, lastKnownMouseY);
   }
 });
+
 
 function getWordAtPosition(x, y) {
   const range = document.caretRangeFromPoint(x, y);
