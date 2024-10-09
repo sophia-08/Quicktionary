@@ -8,30 +8,32 @@
         padding: 10px;
         font-family: Arial, sans-serif;
       }
+      h2 {
+        margin-top: 0;
+      }
       label {
         display: block;
         margin-bottom: 5px;
       }
-      input,
-      select {
-        width: 100%;
-        margin-bottom: 10px;
+      input[type="text"] {
+        width: 50px;
       }
       button {
-        width: 100%;
-        padding: 5px;
+        margin-top: 10px;
       }
     </style>
   </head>
   <body>
     <h2>Settings</h2>
-    <label for="key">Shortcut Key:</label>
-    <input type="text" id="key" maxlength="1" />
-    <label for="modifier">Modifier Key:</label>
-    <select id="modifier">
-      <option value="ctrl">Ctrl</option>
-      <option value="shift">Shift</option>
-    </select>
+    <div>
+      <label for="key">Shortcut Key:</label>
+      <input type="text" id="key" maxlength="1" />
+    </div>
+    <div>
+      <label>Modifier Keys:</label>
+      <label> <input type="checkbox" id="ctrlModifier" /> Ctrl </label>
+      <label> <input type="checkbox" id="shiftModifier" /> Shift </label>
+    </div>
     <button id="save">Save</button>
     <script src="popup.js"></script>
   </body>

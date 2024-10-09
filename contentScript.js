@@ -4,7 +4,7 @@ let lastKnownMouseY = 0;
 let highlightedElement = null;
 let popupElement = null;
 let popupStyleElement = null;
-let userShortcut = { key: "q", modifier: "ctrl" };
+let userShortcut = { key: "q", modifiers: ["ctrl"] };
 
 // Fetch the user-defined shortcut from storage
 chrome.storage.sync.get("shortcut", function (data) {
@@ -54,7 +54,6 @@ function isMouseInElement(mouseEvent, elementRect) {
   );
 }
 
-
 // Function to handle the dictionary lookup
 function handleDictionaryLookup(x, y) {
   // Remove previous highlight if it exists
@@ -81,21 +80,20 @@ document.addEventListener("dblclick", (e) => {
 document.addEventListener("keydown", (e) => {
   // Check if the pressed key combination matches the user-defined shortcut
   const isMac = navigator.platform.toUpperCase().indexOf("MAC") >= 0;
-  const modifierPressed =
-    (userShortcut.modifier === "ctrl" && (e.ctrlKey || (isMac && e.metaKey))) ||
-    (userShortcut.modifier === "alt" && !isMac && e.altKey) ||
-    (userShortcut.modifier === "shift" && e.shiftKey) ||
-    (isMac && userShortcut.modifier === "option" && e.altKey);
+  const modifiersPressed = userShortcut.modifiers.every(
+    (mod) =>
+      (mod === "ctrl" && (e.ctrlKey || (isMac && e.metaKey))) ||
+      (mod === "shift" && e.shiftKey)
+  );
 
   if (
-    modifierPressed &&
+    modifiersPressed &&
     e.key.toLowerCase() === userShortcut.key.toLowerCase()
   ) {
     e.preventDefault(); // Prevent default browser behavior for this key combination
     handleDictionaryLookup(lastKnownMouseX, lastKnownMouseY);
   }
 });
-
 
 function getWordAtPosition(x, y) {
   const range = document.caretRangeFromPoint(x, y);
