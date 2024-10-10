@@ -222,12 +222,12 @@ function createPopup(highlightedElement) {
   popupElement.style.top = `${Math.max(0, top)}px`;
 }
 
-  // Get the bounding rectangles
-  // const highlightRect = highlightElement.getBoundingClientRect();
-  // const popupRect = popupElement.getBoundingClientRect();  
-  // console.log("highlight:",  highlightRect);
-  // console.log("popup:",  popupRect);
-  // console.log("window:", window.scrollX, window.scrollY, window.innerWidth, window.innerHeight);
+// Get the bounding rectangles
+// const highlightRect = highlightElement.getBoundingClientRect();
+// const popupRect = popupElement.getBoundingClientRect();
+// console.log("highlight:",  highlightRect);
+// console.log("popup:",  popupRect);
+// console.log("window:", window.scrollX, window.scrollY, window.innerWidth, window.innerHeight);
 // }
 
 function setThemeAwareStyles(element) {
@@ -254,8 +254,8 @@ function setThemeAwareStyles(element) {
       border-radius: 5px;
       box-shadow: 0 2px 10px rgba(0,0,0,0.3);
       z-index: 1000;
-      width: 500px;
-      height: 300px;
+      max-width: 500px;
+      max-height: 300px;
       overflow-y: auto;
       line-height: 1.4;
       background-color: ${
@@ -379,5 +379,35 @@ function fetchDefinition(word) {
 function updatePopupContent(content) {
   if (popupElement) {
     popupElement.innerHTML = content;
+
+
+  const rect = highlightedElement.getBoundingClientRect();
+  const popupRect = popupElement.getBoundingClientRect();
+
+  // Check if there's enough space below the highlighted element
+  const spaceBelow = window.innerHeight - rect.bottom;
+  const spaceAbove = rect.top;
+
+  let top, left;
+
+  if (spaceBelow >= popupRect.height || spaceBelow > spaceAbove) {
+    // Place popup below the highlighted element
+    top = rect.bottom + window.scrollY;
+    left = rect.left + window.scrollX;
+  } else {
+    // Place popup above the highlighted element
+    top = rect.top + window.scrollY - popupRect.height;
+    left = rect.left + window.scrollX;
+  }
+
+  // Ensure the popup doesn't go off-screen horizontally
+  const rightEdge = rect.right + popupRect.width;
+  if (rightEdge >= window.innerWidth) {
+    left = Math.min(left, window.innerWidth - 400);
+  }
+
+  // Set the position
+  popupElement.style.left = `${Math.max(0, left)}px`;
+  popupElement.style.top = `${Math.max(0, top)}px`;
   }
 }
