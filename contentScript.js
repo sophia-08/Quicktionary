@@ -380,34 +380,33 @@ function updatePopupContent(content) {
   if (popupElement) {
     popupElement.innerHTML = content;
 
+    const rect = highlightedElement.getBoundingClientRect();
+    const popupRect = popupElement.getBoundingClientRect();
 
-  const rect = highlightedElement.getBoundingClientRect();
-  const popupRect = popupElement.getBoundingClientRect();
+    // Check if there's enough space below the highlighted element
+    const spaceBelow = window.innerHeight - rect.bottom;
+    const spaceAbove = rect.top;
 
-  // Check if there's enough space below the highlighted element
-  const spaceBelow = window.innerHeight - rect.bottom;
-  const spaceAbove = rect.top;
+    let top, left;
 
-  let top, left;
+    if (spaceBelow >= popupRect.height || spaceBelow > spaceAbove) {
+      // Place popup below the highlighted element
+      top = rect.bottom + window.scrollY;
+      left = rect.left + window.scrollX;
+    } else {
+      // Place popup above the highlighted element
+      top = rect.top + window.scrollY - popupRect.height;
+      left = rect.left + window.scrollX;
+    }
 
-  if (spaceBelow >= popupRect.height || spaceBelow > spaceAbove) {
-    // Place popup below the highlighted element
-    top = rect.bottom + window.scrollY;
-    left = rect.left + window.scrollX;
-  } else {
-    // Place popup above the highlighted element
-    top = rect.top + window.scrollY - popupRect.height;
-    left = rect.left + window.scrollX;
-  }
+    // Ensure the popup doesn't go off-screen horizontally
+    const rightEdge = rect.right + popupRect.width;
+    if (rightEdge >= window.innerWidth) {
+      left = Math.min(left, window.innerWidth - 400);
+    }
 
-  // Ensure the popup doesn't go off-screen horizontally
-  const rightEdge = rect.right + popupRect.width;
-  if (rightEdge >= window.innerWidth) {
-    left = Math.min(left, window.innerWidth - 400);
-  }
-
-  // Set the position
-  popupElement.style.left = `${Math.max(0, left)}px`;
-  popupElement.style.top = `${Math.max(0, top)}px`;
+    // Set the position
+    popupElement.style.left = `${Math.max(0, left)}px`;
+    popupElement.style.top = `${Math.max(0, top)}px`;
   }
 }
