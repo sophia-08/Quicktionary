@@ -189,37 +189,12 @@ function createPopup(highlightedElement) {
   // Set theme-aware styles
   setThemeAwareStyles(popupElement);
 
-  // Append the popup to the body to get its dimensions
-  document.body.appendChild(popupElement);
-
+  // Position the popup directly under the highlighted word, the position will be adjusted later when response is received
   const rect = highlightedElement.getBoundingClientRect();
-  const popupRect = popupElement.getBoundingClientRect();
+  popupElement.style.left = `${rect.left + window.scrollX}px`;
+  popupElement.style.top = `${rect.bottom + window.scrollY}px`;
 
-  // Check if there's enough space below the highlighted element
-  const spaceBelow = window.innerHeight - rect.bottom;
-  const spaceAbove = rect.top;
-
-  let top, left;
-
-  if (spaceBelow >= popupRect.height || spaceBelow > spaceAbove) {
-    // Place popup below the highlighted element
-    top = rect.bottom + window.scrollY;
-    left = rect.left + window.scrollX;
-  } else {
-    // Place popup above the highlighted element
-    top = rect.top + window.scrollY - popupRect.height;
-    left = rect.left + window.scrollX;
-  }
-
-  // Ensure the popup doesn't go off-screen horizontally
-  const rightEdge = left + popupRect.width;
-  if (rightEdge > window.innerWidth) {
-    left = window.innerWidth - popupRect.width;
-  }
-
-  // Set the position
-  popupElement.style.left = `${Math.max(0, left)}px`;
-  popupElement.style.top = `${Math.max(0, top)}px`;
+  document.body.appendChild(popupElement);
 }
 
 // Get the bounding rectangles
